@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}OAuth2 Redirect Callback{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="jumbotron">
+
+            {% if app.session.flashbag.has('success')|length  %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">Well done!</h4>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <hr>
+                    <p class="mb-0">{{ app.flashes('success')|join('<br />')|raw }}</p>
+                </div>
+            {% endif %}
+
+            {% if app.session.flashbag.has('errors')|length  %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">Opps!</h4>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <hr>
+                    <p class="mb-0">{{ app.flashes('errors')|join('<br />')|raw }}</p>
+                </div>
+            {% endif %}
+
+            {% if app.session.get('accessToken') %}
+                <h4>Use JWT Token below</h4>
+                <code class="my-3">{{ app.session.get('accessToken').access_token|trim }}</code> 
+            {% endif %}
+
+            <div class="mb-3"></div>
+
+            {% if oauth_url is defined %}
+                <a href="{{ oauth_url }}" class="btn btn-primary">Redirect to OAuth2 Server</a>
+            {% else %}
+                {{ form_start(form) }}
+
+                {% if form.refresh is defined %}
+                    {{ form_widget(form.refresh) }}
+                {% endif %}
+
+                {% if form.revoke is defined %}
+                    {{ form_widget(form.revoke) }}
+                {% endif %}
+
+                {{ form_end(form) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
