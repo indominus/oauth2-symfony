@@ -23,7 +23,7 @@ class HomepageController extends AbstractController
      *
      * @var string
      */
-    private $apiUri = 'https://sandbox.openbank.icard.com/';
+    private $apiUri = 'https://sandbox.openbank.icard.com';
 
     /**
      * @Route("/", name="homepage")
