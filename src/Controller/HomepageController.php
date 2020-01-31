@@ -23,7 +23,7 @@ class HomepageController extends AbstractController
      *
      * @var string
      */
-    private $apiUri = 'https://demo.openbank.icard.com/openapi';
+    private $apiUri = 'https://sandbox.openbank.icard.com/';
 
     /**
      * @Route("/", name="homepage")
@@ -56,10 +56,11 @@ class HomepageController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $url = 'https://demo.openbank.icard.com/pisp/generate/auth-id';
+            $url = $_ENV['CLIENT_GENERATE_ID'];
 
             try {
-                $response = HttpClient::create(['http_version' => '2.0'])->request('POST', $url)->getContent();
+                $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'])
+                    ->getContent();
                 $data = json_decode($response, true);
             } catch (ClientExceptionInterface $e) {
                 $data = $e->getMessage();
