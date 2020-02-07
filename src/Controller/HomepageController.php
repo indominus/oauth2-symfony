@@ -59,8 +59,9 @@ class HomepageController extends AbstractController
             $url = $_ENV['CLIENT_GENERATE_ID'];
 
             try {
-                $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'])
-                    ->getContent();
+                $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'], [
+                    'body' => ['client_id' => $_ENV['CLIENT_ID']]
+                ])->getContent();
                 $data = json_decode($response, true);
             } catch (ClientExceptionInterface $e) {
                 $data = $e->getMessage();
