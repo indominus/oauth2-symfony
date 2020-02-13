@@ -73,6 +73,10 @@ class HomepageController extends AbstractController
                 $data = $e->getMessage();
             }
 
+            if (isset($data['error'])) {
+                throw new \RuntimeException($data['error']);
+            }
+            
             $oauthLink = $provider->getAuthorizationUrl([
                 'scope' => 'ais.sandbox',
                 'auth-id' => $data['auth-id']
