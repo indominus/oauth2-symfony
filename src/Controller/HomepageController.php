@@ -6,7 +6,6 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -18,12 +17,6 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 
 class HomepageController extends AbstractController
 {
-
-    /**
-     *
-     * @var string
-     */
-    private $apiUri = 'https://sandbox.openbank.icard.com';
 
     /**
      * @Route("/", name="homepage")
@@ -141,7 +134,7 @@ class HomepageController extends AbstractController
 
         try {
 
-            $client = HttpClient::create()->request('POST', sprintf('%s/token', $this->apiUri), [
+            $client = HttpClient::create()->request('POST', $_ENV['CLIENT_ACCESS_TOKEN_ENDPOINT'], [
                 'body' => [
                     'grant_type' => 'refresh_token',
                     'client_id' => $_ENV['CLIENT_ID'],
