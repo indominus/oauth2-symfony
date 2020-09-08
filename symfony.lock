@@ -17,18 +17,6 @@
     "doctrine/lexer": {
         "version": "1.2.0"
     },
-    "easycorp/easy-log-handler": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "70062abc2cd58794d2a90274502f81b55cd9951b"
-        },
-        "files": [
-            "./config/packages/dev/easy_log_handler.yaml"
-        ]
-    },
     "guzzlehttp/guzzle": {
         "version": "6.5.2"
     },
@@ -55,6 +43,9 @@
     },
     "psr/container": {
         "version": "1.0.0"
+    },
+    "psr/http-client": {
+        "version": "1.0.1"
     },
     "psr/http-message": {
         "version": "1.0.1"
@@ -245,6 +236,9 @@
     "symfony/polyfill-intl-idn": {
         "version": "v1.13.0"
     },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.13.0"
     },
@@ -253,6 +247,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.13.0"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.18.1"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.4"
