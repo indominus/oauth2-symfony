@@ -126,6 +126,9 @@
     "symfony/dependency-injection": {
         "version": "v4.4.0"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
+    },
     "symfony/dotenv": {
         "version": "v4.4.0"
     },
@@ -230,6 +233,9 @@
     "symfony/options-resolver": {
         "version": "v4.4.0"
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.22.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.13.0"
     },
@@ -257,6 +263,9 @@
     "symfony/property-access": {
         "version": "v4.4.0"
     },
+    "symfony/property-info": {
+        "version": "v5.2.3"
+    },
     "symfony/routing": {
         "version": "4.2",
         "recipe": {
@@ -276,6 +285,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.0"
+    },
+    "symfony/string": {
+        "version": "v5.2.3"
     },
     "symfony/templating": {
         "version": "v4.4.0"

@@ -38,9 +38,10 @@ class CallbackController extends AbstractController
 
             $session->set('accessToken', $accessToken->jsonSerialize());
 
-            return new RedirectResponse($this->generateUrl('homepage'));
         } catch (IdentityProviderException | Exception $e) {
-            return $this->render('callback/index.html.twig', ['errors' => $e]);
+			$this->addFlash('errors', $e->getMessage());
         }
+		
+		return new RedirectResponse($this->generateUrl('homepage'));
     }
 }

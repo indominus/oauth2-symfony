@@ -4,7 +4,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
-let publicPath =  Encore.isDev() ? '/oauth2/public/build' : '/oauth2/build';
+let publicPath =  Encore.isDev() ? '/devs/oauth2-symfony/public/build' : '/oauth2/build';
 
 Encore
     .setOutputPath('public/build/')

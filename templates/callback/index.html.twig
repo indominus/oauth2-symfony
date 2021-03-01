@@ -37,7 +37,7 @@
 
             {% if oauth_url is defined %}
                 <a href="{{ oauth_url }}" class="btn btn-primary">Redirect to OAuth2 Server</a>
-            {% else %}
+			{% elseif form is defined %}
                 {{ form_start(form) }}
 
                 {% if form.refresh is defined %}
