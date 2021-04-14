@@ -39,9 +39,9 @@ class CallbackController extends AbstractController
             $session->set('accessToken', $accessToken->jsonSerialize());
 
         } catch (IdentityProviderException | Exception $e) {
-			$this->addFlash('errors', $e->getMessage());
+            $this->addFlash('errors', $e->getMessage());
         }
-		
-		return new RedirectResponse($this->generateUrl('homepage'));
+
+        return new RedirectResponse($this->generateUrl('homepage'));
     }
 }
