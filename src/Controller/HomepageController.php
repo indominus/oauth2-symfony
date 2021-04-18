@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Exception;
 use App\Services\OAuth2\GenericProvider;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,8 +50,6 @@ class HomepageController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $url = $_ENV['CLIENT_GENERATE_ID'];
-
             try {
                 $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'], [
 					'verify_peer' => false,
@@ -58,18 +57,16 @@ class HomepageController extends AbstractController
                     'body' => ['client_id' => $_ENV['CLIENT_ID']]
                 ])->getContent();
                 $data = json_decode($response, true);
-            } catch (ClientExceptionInterface $e) {
-                $data = $e->getMessage();
-            } catch (RedirectionExceptionInterface $e) {
-                $data = $e->getMessage();
-            } catch (ServerExceptionInterface $e) {
-                $data = $e->getMessage();
-            } catch (TransportExceptionInterface $e) {
-                $data = $e->getMessage();
+            } catch (ClientExceptionInterface | TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface $e) {
+                $data = ['error' => $e->getMessage()];
             }
 
             if (isset($data['error'])) {
                 throw new \RuntimeException($data['error']);
+            }
+
+            if (empty($data['auth-id'])) {
+                throw new \RuntimeException('Error while getting auth-id');
             }
             
             $oauthLink = $provider->getAuthorizationUrl([
@@ -151,13 +148,12 @@ class HomepageController extends AbstractController
 
             if (isset($response['access_token'])) {
                 $session->set('accessToken', $response);
-
                 $this->addFlash('success', 'Successfully regenerated accessToken');
             } else {
                 $session->remove('accessToken');
-                $this->addFlash('errors', $response['error'] ?? 'Error occured');
+                $this->addFlash('errors', $response['error'] ?? 'Error occur');
             }
-        } catch (TransportExceptionInterface | Exception $e) {
+        } catch (TransportExceptionInterface | Exception | ClientExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface $e) {
             return new Response($e->getMessage());
         }
 

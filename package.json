@@ -23,5 +23,6 @@
     },
     "dependencies": {
         "is-svg": "^4.2.2"
+        "ssri": "^8.0.1"
     }
 }
