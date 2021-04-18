@@ -53,6 +53,8 @@ class HomepageController extends AbstractController
 
             try {
                 $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'], [
+					'verify_peer' => false,
+					'verify_host' => false,
                     'body' => ['client_id' => $_ENV['CLIENT_ID']]
                 ])->getContent();
                 $data = json_decode($response, true);
@@ -135,6 +137,8 @@ class HomepageController extends AbstractController
         try {
 
             $client = HttpClient::create()->request('POST', $_ENV['CLIENT_ACCESS_TOKEN_ENDPOINT'], [
+				'verify_peer' => false,
+				'verify_host' => false,
                 'body' => [
                     'grant_type' => 'refresh_token',
                     'client_id' => $_ENV['CLIENT_ID'],
