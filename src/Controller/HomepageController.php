@@ -154,7 +154,8 @@ class HomepageController extends AbstractController
                 $this->addFlash('errors', $response['error'] ?? 'Error occur');
             }
         } catch (TransportExceptionInterface | Exception | ClientExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface $e) {
-            return new Response($e->getMessage());
+            $session->remove('accessToken');
+            $this->addFlash('errors', $e->getMessage());
         }
 
         return new RedirectResponse($this->generateUrl('homepage'));
