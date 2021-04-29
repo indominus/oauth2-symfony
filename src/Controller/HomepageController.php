@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use Exception;
@@ -44,52 +45,90 @@ class HomepageController extends AbstractController
                 'label' => 'OAuth2 Authorize',
                 'attr' => ['class' => 'btn btn-primary']
             ])
+            ->add('authorizeIng', SubmitType::class, [
+                'label' => 'ING OAuth2 Authorize',
+                'attr' => ['class' => 'btn btn-success mt-3']
+            ])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            try {
-                $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'], [
-					'verify_peer' => false,
-					'verify_host' => false,
-                    'body' => ['client_id' => $_ENV['CLIENT_ID']]
-                ])->getContent();
-                $data = json_decode($response, true);
-            } catch (ClientExceptionInterface | TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface $e) {
-                $data = ['error' => $e->getMessage()];
-            }
+            if ($form->get('authorize')->isClicked()) {
 
-            if (isset($data['error'])) {
-                throw new \RuntimeException($data['error']);
-            }
+                try {
+                    $response = HttpClient::create(['http_version' => '1.1'])->request('POST', $_ENV['CLIENT_GENERATE_ID'], [
+                        'verify_peer' => false,
+                        'verify_host' => false,
+                        'body' => ['client_id' => $_ENV['CLIENT_ID']]
+                    ])->getContent();
+                    $data = json_decode($response, true);
+                } catch (ClientExceptionInterface | TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface $e) {
+                    $data = ['error' => $e->getMessage()];
+                }
 
-            if (empty($data['auth-id'])) {
-                throw new \RuntimeException('Error while getting auth-id');
-            }
-            
-            $oauthLink = $provider->getAuthorizationUrl([
-                'scope' => 'ais.sandbox',
-                'auth-id' => $data['auth-id']
-            ]);
+                if (isset($data['error'])) {
+                    throw new \RuntimeException($data['error']);
+                }
 
-            $session->set('oauth2_state', $provider->getState());
+                if (empty($data['auth-id'])) {
+                    throw new \RuntimeException('Error while getting auth-id');
+                }
 
-            return $this->render('callback/index.html.twig', [
+                $oauthLink = $provider->getAuthorizationUrl([
+                    'scope' => 'ais.sandbox',
+                    'auth-id' => $data['auth-id']
+                ]);
+
+                $session->set('oauth2_state', $provider->getState());
+
+                return $this->render('callback/index.html.twig', [
                     'oauth_url' => $oauthLink
-            ]);
+                ]);
+            }
+
+            $url = 'https://api.ing.com/oauth2/token';
+            $query = [
+                'grant_types' => 'client_credentials',
+                'scope' => urlencode(implode(',', [
+                    'payment-accounts:balances:view',
+                    'payment-accounts:transactions:view',
+                    'payment-accounts:funds-availability:confirm',
+                    'payment-requests:view',
+                    'payment-requests:create',
+                    'payment-requests:close',
+                    'payment-requests:register',
+                    'payment-accounts:orders:create',
+                ]))
+            ];
+            $headers = [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Date' => gmdate(),
+                'Digest' => 'SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
+                'Authorization' => implode(',', [
+                    'Signature keyId="59E2D668957CBCA21C211EC2FFC035FD999BDA2F"',
+                    'algorithm="rsa-sha256"',
+                    'headers="(request-target) date digest"',
+                    'signature="%s"'
+                ])
+            ];
+
+            // Signature keyId="[CLIENT_ID or eIDAS_SERIAL_CA_IDENTIFIER]",algorithm="rsa-sha256", headers="(request-target) date digest", signature="[SIGNATURE_VALUE]"
+
+            $oauthLink = 'https://api.ing.com/oauth2/token?';
         }
 
         return $this->render('callback/index.html.twig', [
-                'form' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * 
+     *
      * @param Request $request
      * @param SessionInterface $session
+     * @return RedirectResponse|Response
      */
     public function indexAuthorized(Request $request, SessionInterface $session)
     {
@@ -119,12 +158,12 @@ class HomepageController extends AbstractController
         }
 
         return $this->render('callback/index.html.twig', [
-                'form' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * 
+     *
      * @param Request $request
      * @param SessionInterface $session
      */
@@ -134,8 +173,8 @@ class HomepageController extends AbstractController
         try {
 
             $client = HttpClient::create()->request('POST', $_ENV['CLIENT_ACCESS_TOKEN_ENDPOINT'], [
-				'verify_peer' => false,
-				'verify_host' => false,
+                'verify_peer' => false,
+                'verify_host' => false,
                 'body' => [
                     'grant_type' => 'refresh_token',
                     'client_id' => $_ENV['CLIENT_ID'],
@@ -162,7 +201,7 @@ class HomepageController extends AbstractController
     }
 
     /**
-     * 
+     *
      * @param Request $request
      * @param SessionInterface $session
      */
