@@ -22,6 +22,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "dns-packet": "^5.2.2",
         "is-svg": "^4.2.2",
         "ssri": "^8.0.1"
     }
